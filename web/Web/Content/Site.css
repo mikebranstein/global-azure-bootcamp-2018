@@ -1,0 +1,37 @@
+﻿body {
+    background-color: #383256;
+}
+
+#content {
+    background-color: white;
+}
+
+img {
+    max-width: 75%;
+    max-height: 75%;
+}
+
+.grey {
+    background-color: #EDEEEB;
+}
+
+.white {
+    background-color: white;
+}
+
+.overlay {
+    position: relative;
+    top: -20%;
+    left:0;
+    z-index:1;
+    bottom:0;
+    right:0;
+}
+
+textarea.form-control {
+    height: 250px;
+}
+
+.grad {
+    background: linear-gradient(#EDEEEB, white);
+}
