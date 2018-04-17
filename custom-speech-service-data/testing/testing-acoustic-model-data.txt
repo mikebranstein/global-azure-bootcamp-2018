@@ -1,0 +1,6 @@
+testing-1.wav	pikachu should sit on the ground
+testing-2.wav	meowth jump in the air and touch the clouds
+testing-3.wav	wink at me pikachu
+testing-4.wav	don't scratch my face meowth
+testing-5.wav	jigglypuff please stop singing
+testing-6.wav	stand up jigglypuff

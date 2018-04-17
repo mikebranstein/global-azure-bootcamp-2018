@@ -1,0 +1,17 @@
+pikachu-1.wav	pikachu is a mouse pokemon
+pikachu-2.wav	a female pikachu has a dent at the end of its tail
+pikachu-3.wav	in the anime ash's pikachu is a male
+pikachu-4.wav	pikachu has a special fondness of ketchup
+pikachu-5.wav	pikachu
+pikachu-6.wav	pikachu
+jigglypuff-1.wav	known as the balloon pokemon jigglypuff is shaped like a round ball
+jigglypuff-2.wav	jigglypuff has pale pink skin large blue or green eyes and a catlike tail
+jigglypuff-3.wav	the pink tuft of fur on jigglypuff's forehead is shaped like an ice cream cone swirl
+jigglypuff-4.wav	jigglypuff's soothing song can put people to sleep
+jigglypuff-5.wav	jigglypuff is a fairy type pokemon
+meowth-1.wav	meowth is based on the legend of a japanese cat
+meowth-2.wav	meowth is not the only pokemon that can talk
+meowth-3.wav	the meowth pokemon has claws that can retract so they can move without noise
+pokemon-1.wav	pokemon are my favorite animal
+pokemon-2.wav	the pokemon card game is easy to learn
+pokemon-3.wav	the first pokemon movie was my favorite
