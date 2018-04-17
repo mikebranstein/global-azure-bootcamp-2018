@@ -27,6 +27,20 @@
         <td><input id="key" type="text" size="60" value="YOUR_CUSTOM_SPEECH_SERVICE_SUBSCRIPTION_KEY"></td>
       </tr>
       <tr>
+        <td>Enable Language Understanding (LUIS)?</td>
+        <td>
+          <input id="LUISswitch" type="checkbox" />
+        </td>
+      </tr>
+      <tr>
+        <td align="right">Endpoint:</td>
+        <td><input id="LUISendpointUrl" type="text" size="60" value="YOUR_LUIS_ENDPOINT_URL"></td>
+      </tr>
+      <tr>
+        <td align="right">Subscription Key:</td>
+        <td><input id="LUISkey" type="text" size="60" value="YOUR_LUIS_SUBSCRIPTION_KEY"></td>
+      </tr>
+      <tr>
         <td align="right">Language:</td>
         <td align="left">
           <select id="languageOptions">
@@ -102,6 +116,10 @@
       <tr>
         <td align="right">Status:</td>
         <td align="left"><span id="statusDiv"></span></td>
+      </tr>
+      <tr>
+        <td align="right">Intent:</td>
+        <td align="left"><img id="intentImage" src="" alt="No intent identified." width="200" /></td>
       </tr>
     </table>
   </div>
@@ -252,6 +270,7 @@
     var SDK;
     var recognizer;
     var previousSubscriptionKey;
+    var intentImage, LUISendpointUrl, LUISkey, LUISswitch;
 
     document.addEventListener("DOMContentLoaded", function () {
       createBtn = document.getElementById("createBtn");
@@ -262,17 +281,29 @@
       statusDiv = document.getElementById("statusDiv");
       endpointUrl = document.getElementById("endpointUrl");
       key = document.getElementById("key");
+      LUISendpointUrl = document.getElementById("LUISendpointUrl");
+      LUISkey = document.getElementById("LUISkey");
+      LUISswitch = document.getElementById("LUISswitch");
       languageOptions = document.getElementById("languageOptions");
       formatOptions = document.getElementById("formatOptions");
       inputSource = document.getElementById("inputSource");
       recognitionMode = document.getElementById("recognitionMode");
       filePicker = document.getElementById('filePicker');
+      intentImage = document.getElementById("intentImage");
 
       languageOptions.addEventListener("change", Setup);
       formatOptions.addEventListener("change", Setup);
       recognitionMode.addEventListener("change", Setup);
 
       startBtn.addEventListener("click", function () {
+        if (LUISswitch.checked && (LUISendpointUrl.value == "" || LUISendpointUrl.value == "YOUR_LUIS_ENDPOINT_URL")) {
+          alert("Please enter your Language Understanding (LUIS) URL!");
+          return;
+        }
+        if (LUISswitch.checked && (LUISkey.value == "" || LUISkey.value == "YOUR_LUIS_SUBSCRIPTION_KEY")) {
+          alert("Please enter your Language Understanding (LUIS) subscription key!");
+          return;
+        }
         if (endpointUrl.value == "" || endpointUrl.value == "YOUR_CUSTOM_SPEECH_SERVICE_ENDPOINT_URL") {
           alert("Please enter your Custom Speech Service Endpoint URL!");
           return;
@@ -309,6 +340,18 @@
         }
       });
 
+      LUISendpointUrl.addEventListener("focus", function () {
+        if (LUISendpointUrl.value == "YOUR_LUIS_ENDPOINT_URL") {
+          LUISendpointUrl.value = "";
+        }
+      });
+
+      LUISendpointUrl.addEventListener("focusout", function () {
+        if (LUISendpointUrl.value == "") {
+          LUISendpointUrl.value = "YOUR_LUIS_ENDPOINT_URL";
+        }
+      });
+
       key.addEventListener("focus", function () {
         if (key.value == "YOUR_CUSTOM_SPEECH_SERVICE_SUBSCRIPTION_KEY") {
           key.value = "";
@@ -318,6 +361,18 @@
       key.addEventListener("focusout", function () {
         if (key.value == "") {
           key.value = "YOUR_CUSTOM_SPEECH_SERVICE_SUBSCRIPTION_KEY";
+        }
+      });
+
+      LUISkey.addEventListener("focus", function () {
+        if (LUISkey.value == "YOUR_LUIS_SUBSCRIPTION_KEY") {
+          LUISkey.value = "";
+        }
+      });
+
+      LUISkey.addEventListener("focusout", function () {
+        if (LUISkey.value == "") {
+          LUISkey.value = "YOUR_LUIS_SUBSCRIPTION_KEY";
         }
       });
 
@@ -372,7 +427,108 @@
 
     function UpdateRecognizedPhrase(json) {
       hypothesisDiv.innerHTML = "";
-      phraseDiv.innerHTML += json + "\n";
+      phraseDiv.innerHTML += json + "\n\n";
+
+      if (LUISswitch.checked) {
+        var result = JSON.parse(json);
+        if (!result.RecognitionStatus || !result.DisplayText) return;
+        if (result.RecognitionStatus != "Success") return;
+        SubmitRecognizedPhraseToLUIS(result.DisplayText,
+          function (responseJson) {
+            phraseDiv.innerHTML += responseJson + "\n\n";
+            ProcessLUISIntent(responseJson);
+          }
+        );
+      }
+    }
+
+    function SubmitRecognizedPhraseToLUIS(phrase, callback) {
+      var url = LUISendpointUrl.value + "?subscription-key=" + LUISkey.value + "&verbose=true&timezoneOffset=0&q=" + encodeURI(phrase);
+      var xhr = new (XMLHttpRequest || ActiveXObject)('MSXML2.XMLHTTP.3.0');
+      xhr.open('GET', url, 1);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          callback(xhr.responseText);
+        } else {
+          alert("error contacting LUIS");
+        }
+      };
+      xhr.send();
+    }
+
+    function ProcessLUISIntent(responseText) {
+      var json = JSON.parse(responseText);
+
+      // get top scoring intent
+      var intent = "None";
+      if (json.topScoringIntent) {
+        intent = json.topScoringIntent.intent;
+      }
+      phraseDiv.innerHTML += "Intent: " + intent + "\n";
+
+      // get the identified pokemon entity
+      pokemon = ParsePokemonEntity(json);
+      phraseDiv.innerHTML += "Pokemon: " + pokemon + "\n\n";
+
+      var image;
+      switch (intent) {
+        case "Jump": {
+          if (pokemon == "Jigglypuff") image = "jigglypuff-jump.png";
+          else image = "unknown.gif";
+          break;
+        }
+        case "Sing": {
+          if (pokemon == "Jigglypuff") image = "jigglypuff-sing.png";
+          else image = "unknown.gif";
+          break;
+        }
+        case "Wave": {
+          if (pokemon == "Jigglypuff") image = "jigglypuff-wave.png";
+          else if (pokemon == "Pikachu") image = "pikachu-wave.png";
+          else image = "unknown.gif";
+          break;
+        }
+        case "Scratch": {
+          if (pokemon == "Meowth") image = "meowth-scratch.png";
+          else image = "unknown.gif";
+          break;
+        }
+        case "Sit": {
+          if (pokemon == "Meowth") image = "meowth-sit.png";
+          else if (pokemon == "Pikachu") image = "pikachu-sit.png";
+          else image = "unknown.gif";
+          break;
+        }
+        case "Wink": {
+          if (pokemon == "Meowth") image = "meowth-wink.png";
+          else image = "unknown.gif";
+          break;
+        }
+        case "ActAngry": {
+          if (pokemon == "Pikachu") image = "pikachu-actangry.png";
+          else image = "unknown.gif";
+          break;
+        }
+        case "None": {
+          image = "unknown.gif";
+          break;
+        }
+      }
+
+      intentImage.src = "/Content/" + image;
+    }
+
+    function ParsePokemonEntity(json) {
+      var defaultPokemon = "Unknown";
+      if (!json.entities) return defaultPokemon;
+      if (json.entities.length == 0) return defaultPokemon;
+      if (!json.entities[0].type) return defaultPokemon;
+      if (json.entities[0].type != "Pokemon") return defaultPokemon;
+      if (!json.entities[0].resolution) return defaultPokemon;
+      if (!json.entities[0].resolution.values) return defaultPokemon;
+      if (json.entities[0].resolution.values.length == 0) return defaultPokemon;
+      if (!json.entities[0].resolution.values[0]) return defaultPokemon;
+      return json.entities[0].resolution.values[0];
     }
 
     function OnComplete() {

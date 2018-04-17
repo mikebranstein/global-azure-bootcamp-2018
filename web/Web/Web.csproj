@@ -124,7 +124,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\asurion-image-01.jpg" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
@@ -132,7 +131,15 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\cogsvcs.png" />
-    <Content Include="Content\logo.png" />
+    <Content Include="Content\jigglypuff-jump.png" />
+    <Content Include="Content\jigglypuff-sing.png" />
+    <Content Include="Content\jigglypuff-wave.png" />
+    <Content Include="Content\meowth-scratch.png" />
+    <Content Include="Content\meowth-sit.png" />
+    <Content Include="Content\meowth-wink.png" />
+    <Content Include="Content\pikachu-actangry.png" />
+    <Content Include="Content\pikachu-sit.png" />
+    <Content Include="Content\pikachu-wave.png" />
     <Content Include="Content\sdk\Speech.Browser.Sdk.js" />
     <Content Include="Content\sdk\speech.sdk.bundle.js" />
     <Content Include="Content\sdk\src\common.browser\ConsoleLoggingListener.js" />
@@ -190,6 +197,7 @@
     <Content Include="Content\sdk\src\sdk\speech\SpeechResults.js" />
     <Content Include="Content\sdk\src\sdk\speech\WebsocketMessageFormatter.js" />
     <Content Include="Content\start.png" />
+    <Content Include="Content\unknown.gif" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -315,7 +323,6 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Home\Styled.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
