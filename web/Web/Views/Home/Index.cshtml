@@ -431,9 +431,9 @@
 
       if (LUISswitch.checked) {
         var result = JSON.parse(json);
-        if (!result.RecognitionStatus || !result.DisplayText) return;
+        if (!result.RecognitionStatus || !result.NBest) return;
         if (result.RecognitionStatus != "Success") return;
-        SubmitRecognizedPhraseToLUIS(result.DisplayText,
+        SubmitRecognizedPhraseToLUIS(result.NBest[0].Display,
           function (responseJson) {
             phraseDiv.innerHTML += responseJson + "\n\n";
             ProcessLUISIntent(responseJson);
